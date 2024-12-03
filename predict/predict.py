@@ -3,12 +3,15 @@ from sys import argv, exit
 
 
 def predict(theta0: float, theta1: float, mileage: float):
-	estimatePrice = theta0 + (theta1 * mileage)
+	estimatePrice = (theta1 * mileage) + theta0
 	print(f"The estimated price is equal to: {estimatePrice}$")
 
 def main():
 	theta0 = 0
 	theta1 = 0
+	if len(argv) != 2:
+		print("You need to specify a float in argument")
+		exit(1)
 	try:
 		file = open("data", mode = 'r')
 		lines = str(file.readlines())

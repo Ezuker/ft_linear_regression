@@ -1,65 +1,81 @@
-# from load_csv import load
-# from sys import exit
-# import pandas as pd
-# import matplotlib.pyplot as plt
-
-
-def train(file: pd.DataFrame):
-	fig, ax = plt.subplots()
-	ax.scatter(file['km'], file['price'])
-	ax.set_ylabel("Price")
-	ax.set_xlabel("km")
-	mean_y = sum(file['price']) / len(file['price'])
-	plt.axhline(y=mean_y, color='r', linestyle='--')
-	plt.show()
-
-
-import numpy as np 
-import matplotlib.pyplot as plt 
 from load_csv import load
+from sys import exit
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
-# def estimate_coef(x, y): 
-#     n = np.size(x) 
-#     m_x, m_y = np.mean(x), np.mean(y) 
 
-#     SS_xy = np.sum(y*x) - n*m_y*m_x 
-#     SS_xx = np.sum(x*x) - n*m_x*m_x 
+def grad_descent(X, y, theta, learning_rate, n_iterations):
+	cost_history = np.zeros(n_iterations)
+	for i in range(0, n_iterations):
+		theta = theta - learning_rate * grad(X, y, theta)
+		cost_history[i] = cost(X, y, theta)
+	return theta, cost_history
 
-#     theta_1 = SS_xy / SS_xx 
-#     theta_0 = m_y - theta_1*m_x 
 
-#     return(theta_0, theta_1) 
+def grad(X, y, theta):
+	m = len(y)
+	return 1 / m * X.T.dot(model(X, theta) - y)
 
-# def plot_regression_line(x, y, theta): 
-# 	x_array = x.to_numpy()
-# 	y_array = y.to_numpy()
-# 	plt.scatter(x_array, y_array, color = "b",marker = "o", s = 30) 
-# 	y_pred = theta[0] + theta[1]* x_array
-# 	plt.plot(x_array, y_pred, color = "r") 
-# 	plt.xlabel('price')
-# 	plt.ylabel('kms')
-# 	plt.show() 
+
+def cost(X, y, theta):
+	m = len(y)
+	return 1 / (2 * m) * np.sum((model(X,theta) - y) ** 2)
+
+
+def model(X, theta):
+	return X.dot(theta)
 
 
 def main():
 	try:
 		file = load("data.csv")
-		# x = file['km']
-		# y = file['price']
-		# theta = estimate_coef(x, y) 
-		# print("Estimated coefficients:\ntheta_0 = {} \ntheta_1 = {}".format(theta[0], theta[1])) 
-		# data = open("data", "x")
-		# data.write(str(theta))
-		# plot_regression_line(x, y, theta) 
+		x = np.array(file['km'])
+		y = np.array(file['price'])
+		x = x.reshape(-1, 1)
+		y = y.reshape(-1, 1)
+		theta = np.zeros((2, 1))
+		
+		# Normalization
+		mean_x = np.mean(x)
+		std_x = np.std(x)
+		x_scaled = (x - mean_x) / std_x
+
+		# Gradient descent with scaled x
+		X = np.hstack((x_scaled, np.ones(x.shape)))
+		theta_final, cost_history = grad_descent(X, y, theta, 0.01, 10000)
+
+		# Denormalize theta
+		prediction = model(X, theta_final)
+		print(theta_final)
+
+		plt.figure(figsize=(12, 5))
+		plt.subplot(1, 2, 1)
+		plt.scatter(x, y)
+		plt.plot(x, prediction, c='r')
+		plt.subplot(1, 2, 2)
+		plt.plot(cost_history)
+		plt.xlabel('Iterations')
+		plt.ylabel('Cost')
+		plt.title('Cost vs Iterations')
+		plt.show()
+		plt.savefig("test")
 	except FileNotFoundError:
 		print("File Not Found")
 		exit(1)
-	train(file)
+	try:
+		data = open("data", "w")
+		tuple_value = (float(theta_final[0, 0]), float(theta_final[1, 0]))
+		data.write(str(tuple_value))
+		data.close()
+	except:
+		pass
 
 
 if __name__ == "__main__":
 	main()
 
+#Equation normal (nul)
 	# y = mx + c
 	# theta0 = c
 	# theta1 = m
