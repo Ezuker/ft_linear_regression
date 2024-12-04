@@ -43,21 +43,33 @@ def main():
 
 		# Gradient descent with scaled x
 		X = np.hstack((x_scaled, np.ones(x.shape)))
-		theta_final, cost_history = grad_descent(X, y, theta, 0.01, 10000)
+		theta_final, cost_history = grad_descent(X, y, theta, 0.01, 1000)
 
-		# Denormalize theta
-		prediction = model(X, theta_final)
 		print(theta_final)
 
 		plt.figure(figsize=(12, 5))
-		plt.subplot(1, 2, 1)
+
+		plt.subplot(2, 2, 1)
 		plt.scatter(x, y)
+		prediction = model(X, theta_final)
 		plt.plot(x, prediction, c='r')
-		plt.subplot(1, 2, 2)
+
+		plt.subplot(2, 2, 2)
 		plt.plot(cost_history)
 		plt.xlabel('Iterations')
 		plt.ylabel('Cost')
 		plt.title('Cost vs Iterations')
+
+		plt.subplot(2, 2, 3)
+		plt.scatter(x, y)
+		new_theta_final = np.zeros((2, 1))
+		new_theta_final[1] = theta_final[1] / std_x
+		new_theta_final[0] = theta_final[0] - ((theta_final[1] * mean_x) / std_x) 
+		print(new_theta_final)
+		new_X = np.hstack((x, np.ones(x.shape)))
+		prediction2 = model(new_X, new_theta_final)
+		plt.plot(x, prediction2, c='r')
+
 		plt.show()
 		plt.savefig("test")
 	except FileNotFoundError:
