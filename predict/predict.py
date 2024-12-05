@@ -7,15 +7,15 @@ def predict(a: float, b: float, mileage: float):
 	print(f"The estimated price is equal to: {estimatePrice}$")
 
 def main():
-	a = 0
-	b = 0
+	theta0 = 0
+	theta1 = 0
 	if len(argv) != 2:
 		print("You need to specify a float in argument")
 		exit(1)
 	try:
 		file = open("data", mode = 'r')
 		lines = str(file.readlines())
-		b, a = tuple(search("({:f}, {:f})", lines))
+		theta0, theta1 = tuple(search("({:f}, {:f})", lines))
 		float(argv[1])
 	except TypeError as e:
 		print("Data file is wrong")
@@ -25,7 +25,7 @@ def main():
 	except ValueError as e:
 		print("You need to specify a float in argument")
 		exit(1)
-	predict(a, b, float(argv[1]))
+	predict(theta1, theta0, float(argv[1]))
 
 
 

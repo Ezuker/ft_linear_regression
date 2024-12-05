@@ -42,22 +42,20 @@ def main():
 		# x_scaled = (x - mean_x) / std_x
 
 		# Normalization
-		min_x = min(x)
-		max_x = max(x)
-		x_scaled = (x - min_x) / (max_x - min_x)
+		x_scaled = (x - min(x)) / (max(x) - min(x))
+		y_scaled = (y - min(y)) / (max(y) - min(y))
 
 		# Gradient descent with scaled x
 		X = np.hstack((x_scaled, np.ones(x.shape)))
-		theta_final, cost_history = grad_descent(X, y, theta, 0.01, 10000)
-
-		print(theta_final)
+		theta_final, cost_history = grad_descent(X, y_scaled, theta, 0.01, 10000)
 
 		plt.figure(figsize=(12, 5))
 
 		plt.subplot(2, 2, 1)
-		plt.scatter(x, y)
+		plt.scatter(x_scaled, y_scaled)
 		prediction = model(X, theta_final)
-		plt.plot(x, prediction, c='r')
+		plt.title("Normalized data")
+		plt.plot(x_scaled, prediction, c='r')
 
 		plt.subplot(2, 2, 2)
 		plt.plot(cost_history)
@@ -68,13 +66,10 @@ def main():
 		plt.subplot(2, 2, 3)
 		plt.scatter(x, y)
 		new_theta_final = np.zeros((2, 1))
-		std_x = (max_x - min_x)
-		# Unscaled parameters
-		new_theta_final[1] = theta_final[1] / std_x  # b
-		new_theta_final[0] = theta_final[0] - ((theta_final[1] * min_x) / std_x)  # a
-		# new_theta_final[1] = 8481.172796984529 #b
-		# new_theta_final[0] = -0.020129886654102203 #a
-		print(f"new_theta_final {float(new_theta_final[1]), float(new_theta_final[0])}")
+		deltaX = max(x) - min(x)
+		deltaY = max(y) - min(y)
+		new_theta_final[0] = deltaY * theta_final[0] / deltaX 
+		new_theta_final[1] = (deltaY * theta_final[1]) + min(y) - theta_final[0] * (deltaY / deltaX) * min(x)  # a
 		print(f"expected new_theta_final (8481.172796984529, -0.020129886654102203)")
 		new_X = np.hstack((x, np.ones(x.shape)))
 		prediction2 = model(new_X, new_theta_final)
@@ -85,7 +80,7 @@ def main():
 		exit(1)
 	try:
 		data = open("data", "w")
-		tuple_value = (float(new_theta_final[0]), float(new_theta_final[1]))
+		tuple_value = (float(new_theta_final[0][0]), float(new_theta_final[1][0]))
 		data.write(str(tuple_value))
 		data.close()
 	except:
