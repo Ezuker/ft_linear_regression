@@ -36,14 +36,19 @@ def main():
 		y = y.reshape(-1, 1)
 		theta = np.zeros((2, 1))
 		
+		# Standardization
+		# mean_x = np.mean(x)
+		# std_x = np.std(x)
+		# x_scaled = (x - mean_x) / std_x
+
 		# Normalization
-		mean_x = np.mean(x)
-		std_x = np.std(x)
-		x_scaled = (x - mean_x) / std_x
+		min_x = min(x)
+		max_x = max(x)
+		x_scaled = (x - min_x) / (max_x - min_x)
 
 		# Gradient descent with scaled x
 		X = np.hstack((x_scaled, np.ones(x.shape)))
-		theta_final, cost_history = grad_descent(X, y, theta, 0.01, 1000)
+		theta_final, cost_history = grad_descent(X, y, theta, 0.01, 10000)
 
 		print(theta_final)
 
@@ -63,21 +68,24 @@ def main():
 		plt.subplot(2, 2, 3)
 		plt.scatter(x, y)
 		new_theta_final = np.zeros((2, 1))
-		new_theta_final[1] = theta_final[1] / std_x
-		new_theta_final[0] = theta_final[0] - ((theta_final[1] * mean_x) / std_x) 
-		print(new_theta_final)
+		std_x = (max_x - min_x)
+		# Unscaled parameters
+		new_theta_final[1] = theta_final[1] / std_x  # b
+		new_theta_final[0] = theta_final[0] - ((theta_final[1] * min_x) / std_x)  # a
+		# new_theta_final[1] = 8481.172796984529 #b
+		# new_theta_final[0] = -0.020129886654102203 #a
+		print(f"new_theta_final {float(new_theta_final[1]), float(new_theta_final[0])}")
+		print(f"expected new_theta_final (8481.172796984529, -0.020129886654102203)")
 		new_X = np.hstack((x, np.ones(x.shape)))
 		prediction2 = model(new_X, new_theta_final)
 		plt.plot(x, prediction2, c='r')
-
 		plt.show()
-		plt.savefig("test")
 	except FileNotFoundError:
 		print("File Not Found")
 		exit(1)
 	try:
 		data = open("data", "w")
-		tuple_value = (float(theta_final[0, 0]), float(theta_final[1, 0]))
+		tuple_value = (float(new_theta_final[0]), float(new_theta_final[1]))
 		data.write(str(tuple_value))
 		data.close()
 	except:

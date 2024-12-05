@@ -2,20 +2,20 @@ from parse import search
 from sys import argv, exit
 
 
-def predict(theta0: float, theta1: float, mileage: float):
-	estimatePrice = (theta1 * mileage) + theta0
+def predict(a: float, b: float, mileage: float):
+	estimatePrice = (a * mileage) + b
 	print(f"The estimated price is equal to: {estimatePrice}$")
 
 def main():
-	theta0 = 0
-	theta1 = 0
+	a = 0
+	b = 0
 	if len(argv) != 2:
 		print("You need to specify a float in argument")
 		exit(1)
 	try:
 		file = open("data", mode = 'r')
 		lines = str(file.readlines())
-		theta0, theta1 = tuple(search("({:f}, {:f})", lines))
+		b, a = tuple(search("({:f}, {:f})", lines))
 		float(argv[1])
 	except TypeError as e:
 		print("Data file is wrong")
@@ -25,7 +25,7 @@ def main():
 	except ValueError as e:
 		print("You need to specify a float in argument")
 		exit(1)
-	predict(theta0, theta1, float(argv[1]))
+	predict(a, b, float(argv[1]))
 
 
 
