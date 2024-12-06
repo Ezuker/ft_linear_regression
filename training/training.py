@@ -53,7 +53,6 @@ def plt_denormalize(x, y, theta_final):
 	deltaY = max(y) - min(y)
 	new_theta_final[0] = deltaY * theta_final[0] / deltaX 
 	new_theta_final[1] = (deltaY * theta_final[1]) + min(y) - theta_final[0] * (deltaY / deltaX) * min(x)  # a
-	print(f"expected new_theta_final (8481.172796984529, -0.020129886654102203)")
 	new_X = np.hstack((x, np.ones(x.shape)))
 	prediction2 = model(new_X, new_theta_final)
 	plt.plot(x, prediction2, c='r')
@@ -62,15 +61,12 @@ def plt_denormalize(x, y, theta_final):
 
 def plt_3d(X, y_scaled):
 	plt.subplot(2, 2, 4, projection='3d')
-	print(X)
-	print(y_scaled)
 	theta0 = np.arange(-4, 4, 0.05, dtype=float)
 	theta1 = np.arange(-4, 4, 0.05, dtype=float)
 
 	Theta0, Theta1 = np.meshgrid(theta0, theta1)
 
 	cost_history = np.zeros_like(Theta0)
-	print(Theta0.shape)
 	for i in range(Theta0.shape[0]):
 		for j in range(Theta1.shape[1]):
 			theta = np.zeros((2, 1))
