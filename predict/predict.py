@@ -15,7 +15,7 @@ def main():
 	try:
 		file = open("data", mode = 'r')
 		lines = str(file.readlines())
-		theta0, theta1 = tuple(search("({:f}, {:f})", lines))
+		theta1, theta0 = tuple(search("({:f}, {:f})", lines))
 		float(argv[1])
 	except TypeError as e:
 		print("Data file is wrong")
