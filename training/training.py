@@ -7,6 +7,12 @@ from mpl_toolkits.mplot3d import axes3d
 
 
 def grad_descent(X, y, theta, learning_rate, n_iterations):
+	"""
+	Calcul the best param of theta0 and theta1
+
+	a = a - alpha * (∂J / ∂a)
+	b = b - alpha * (∂J / ∂b)
+	"""
 	cost_history = np.zeros(n_iterations)
 	for i in range(0, n_iterations):
 		theta = theta - learning_rate * grad(X, y, theta)
@@ -15,17 +21,37 @@ def grad_descent(X, y, theta, learning_rate, n_iterations):
 
 
 def grad(X, y, theta):
+	"""
+	Function that calculate ∂J(a,b) / ∂a and ∂J(a,b) / ∂b
+	"""
 	m = len(y)
 	return 1 / m * X.T.dot(model(X, theta) - y)
 
 
 def cost(X, y, theta):
+	"""
+	MSE Formula
+	Erreur quadratique moyenne
+	"""
 	m = len(y)
 	return 1 / (2 * m) * np.sum((model(X,theta) - y) ** 2)
 
 
 def model(X, theta):
+	"""
+	Multiplication de matrices
+	x1 1
+	x2 1   x   a
+	xn 1       b
+	"""
 	return X.dot(theta)
+
+
+def R_Squared(y, prediction):
+	"""
+	Calculate the accuracy of the model with the R2 technique
+	"""
+	return 1 - (sum((y - prediction) ** 2)) / (sum((y - y.mean()) ** 2))
 
 
 def plt_normalize(x_scaled, y_scaled, X, theta_final):
@@ -55,6 +81,7 @@ def plt_denormalize(x, y, theta_final):
 	new_theta_final[1] = (deltaY * theta_final[1]) + min(y) - theta_final[0] * (deltaY / deltaX) * min(x)  # a
 	new_X = np.hstack((x, np.ones(x.shape)))
 	prediction2 = model(new_X, new_theta_final)
+	print(f"The precision of the algorithm is equal to {R_Squared(y, prediction2)}")
 	plt.plot(x, prediction2, c='r')
 	return new_theta_final
 
