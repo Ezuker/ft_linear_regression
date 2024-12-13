@@ -111,6 +111,10 @@ def plt_3d(X, y_scaled):
 	pass
 
 
+def r_squared(theta, y_scaled, X):
+	return 1 - (sum((y_scaled - model(X, theta)) ** 2) / sum((y_scaled - y_scaled.mean()) ** 2))
+
+
 def main():
 	try:
 		file = load("data.csv")
@@ -127,7 +131,6 @@ def main():
 		x_scaled = (x - min(x)) / (max(x) - min(x))
 		y_scaled = (y - min(y)) / (max(y) - min(y))
 
-		# Gradient descent with scaled x
 		X = np.hstack((x_scaled, np.ones(x.shape)))
 		theta_final, cost_history = grad_descent(X, y_scaled, theta, 0.01, 10000)
 
@@ -136,6 +139,7 @@ def main():
 		plt_cost(cost_history)
 		new_theta_final = plt_denormalize(x, y, theta_final)
 		plt_3d(X, y_scaled)
+		r_squared(theta, y_scaled, X)
 		plt.show()
 	except FileNotFoundError:
 		print("File Not Found")
