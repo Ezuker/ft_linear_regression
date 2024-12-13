@@ -106,7 +106,7 @@ def plt_3d(X, y_scaled):
 	ax.contour(Theta0, Theta1, cost_history, zdir='z', offset=-2.5, cmap='coolwarm')
 
 	ax.set(xlim=(-4, 4), ylim=(-4, 4), zlim=(-5, 20),
-		xlabel='Theta0', ylabel='Theta1', zlabel='CostHistory')
+		xlabel='Theta0', ylabel='Theta1', zlabel='Cost')
 	plt.show()
 	pass
 

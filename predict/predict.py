@@ -6,6 +6,7 @@ def predict(a: float, b: float, mileage: float):
 	estimatePrice = (a * mileage) + b
 	print(f"The estimated price is equal to: {estimatePrice}$")
 
+
 def main():
 	theta0 = 0
 	theta1 = 0
