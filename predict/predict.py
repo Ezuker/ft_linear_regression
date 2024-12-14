@@ -3,6 +3,9 @@ from sys import argv, exit
 
 
 def predict(a: float, b: float, mileage: float):
+	"""
+	Print the estimate price using ax + b
+	"""
 	estimatePrice = (a * mileage) + b
 	print(f"The estimated price is equal to: {estimatePrice}$")
 
@@ -14,10 +17,10 @@ def main():
 		print("You need to specify a float in argument")
 		exit(1)
 	try:
+		float(argv[1])
 		file = open("data", mode = 'r')
 		lines = str(file.readlines())
 		theta1, theta0 = tuple(search("({:f}, {:f})", lines))
-		float(argv[1])
 	except TypeError as e:
 		print("Data file is wrong")
 		exit(1)

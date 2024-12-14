@@ -55,6 +55,9 @@ def R_Squared(y, prediction):
 
 
 def plt_normalize(x_scaled, y_scaled, X, theta_final):
+	"""
+	Display the normalize graph
+	"""
 	plt.subplot(2, 2, 1)
 	plt.scatter(x_scaled, y_scaled)
 	prediction = model(X, theta_final)
@@ -63,6 +66,9 @@ def plt_normalize(x_scaled, y_scaled, X, theta_final):
 
 
 def plt_cost(cost_history):
+	"""
+	Display the cost vs iterations
+	"""
 	plt.subplot(2, 2, 2)
 	plt.plot(cost_history)
 	plt.xlabel('Iterations')
@@ -71,6 +77,9 @@ def plt_cost(cost_history):
 
 
 def plt_denormalize(x, y, theta_final):
+	"""
+	Denormalize the data to get the right theta
+	"""
 	plt.subplot(2, 2, 3)
 	plt.scatter(x, y)
 	plt.title("Denormalized data")
@@ -87,6 +96,13 @@ def plt_denormalize(x, y, theta_final):
 
 
 def plt_3d(X, y_scaled):
+	"""
+	Function that add a subplot to the final rendering
+	The subplot is a 3d graph :
+	x: theta0
+	y: theta1
+	z: cost(theta0, theta1)
+	"""
 	plt.subplot(2, 2, 4, projection='3d')
 	theta0 = np.arange(-4, 4, 0.05, dtype=float)
 	theta1 = np.arange(-4, 4, 0.05, dtype=float)
@@ -112,12 +128,25 @@ def plt_3d(X, y_scaled):
 
 
 def r_squared(theta, y_scaled, X):
+	"""
+	Return the precision of the algorithm using RSquared method
+	"""
 	return 1 - (sum((y_scaled - model(X, theta)) ** 2) / sum((y_scaled - y_scaled.mean()) ** 2))
 
 
 def main():
 	try:
 		file = load("data.csv")
+	except FileNotFoundError:
+		print("File Not Found")
+		exit(1)
+	except pd.errors.EmptyDataError:
+		print("The data.csv is empty")
+		exit(1)
+	except pd.errors.ParserError:
+		print("Please provide a good csv file")
+		exit(1)
+	try:
 		x = np.array(file['km']).reshape(-1, 1)
 		y = np.array(file['price']).reshape(-1, 1)
 		theta = np.zeros((2, 1))
@@ -141,9 +170,10 @@ def main():
 		plt_3d(X, y_scaled)
 		r_squared(theta, y_scaled, X)
 		plt.show()
-	except FileNotFoundError:
-		print("File Not Found")
-		exit(1)
+	except KeyError as e:
+		print(f"The data content is wrong {e}")
+	except TypeError as e:
+		print(f"The data content is wrong {e}")
 	try:
 		data = open("data", "w")
 		tuple_value = (float(new_theta_final[0][0]), float(new_theta_final[1][0]))
